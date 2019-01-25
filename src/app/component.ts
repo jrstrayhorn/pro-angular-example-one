@@ -18,6 +18,35 @@ export class ProductComponent {
     return this.model.getProducts()[position];
   }
 
+  getProduct(key: number): Product {
+    return this.model.getProduct(key);
+  }
+
+  getProducts(): Product[] {
+    return this.model.getProducts();
+  }
+
+  getProductCount(): number {
+    console.log("getProductCount invoked");
+    return this.getProducts().length;
+  }
+
+  targetName: string = "Kayak";
+
+  counter: number = 1;
+
+  get nextProduct(): Product {
+    return this.model.getProducts().shift();
+  }
+
+  getProductPrice(index: number): number {
+    return Math.floor(this.getProduct(index).price);
+  }
+
+  getKey(index: number, product: Product) {
+    return product.id;
+  }
+
   getClassesByPosition(position: number): string {
     let product = this.getProductByPosition(position);
     return "p-2 " + (product.price < 50 ? "bg-info" : "bg-warning");
