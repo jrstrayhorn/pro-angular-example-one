@@ -6,77 +6,84 @@
     border: 2px solid #6bc502;
   }
 </style>
-<div class="m-2">
-  <div class="bg-info text-white p-2">
-    Selected Product: {{ selectedProduct || "(None)" }}
-  </div>
-  <table class="table table-sm table-bordered">
-    <tr>
-      <th></th>
-      <th>Name</th>
-      <th>Category</th>
-      <th>Price</th>
-    </tr>
-    <tr
-      *ngFor="let item of getProducts(); let i = index"
-      [class.bg-info]="getSelected(item)"
+<div class="row m-2">
+  <div class="col-6">
+    <form
+      class="m-2"
+      novalidate
+      [formGroup]="form"
+      (ngSubmit)="submitForm(form)"
     >
-      <td (mouseover)="selectedProduct = item.name">{{ i + 1 }}</td>
-      <td>{{ item.name }}</td>
-      <td>{{ item.category }}</td>
-      <td>{{ item.price }}</td>
-    </tr>
-  </table>
-
-  <div class="form-group">
-    <label>Product Name</label>
-    <input class="form-control" [(ngModel)]="selectedProduct" />
-  </div>
-  <div class="form-group">
-    <label>Product Name</label>
-    <input class="form-control" [(ngModel)]="selectedProduct" />
-  </div>
-
-  <h3>New Product Form</h3>
-  <div class="m-2">
-    <div class="bg-info text-white mb-2 p-2">Model Data: {{ jsonProduct }}</div>
-  </div>
-  <form class="m-2" novalidate [formGroup]="form" (ngSubmit)="submitForm(form)">
-    <div
-      class="bg-danger text-white p-2 mb-2"
-      *ngIf="formSubmitted && form.invalid"
-    >
-      There are problems with the form
-      <ul>
-        <li *ngFor="let error of form.getFormValidationMessages()">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
-    <div class="form-group" *ngFor="let control of form.productControls">
-      <label>{{ control.label }}</label>
-      <input
-        class="form-control"
-        [(ngModel)]="newProduct[control.modelProperty]"
-        name="{{ control.modelProperty }}"
-        formControlName="{{ control.modelProperty }}"
-      />
-      <ul
-        class="text-danger list-unstyled"
-        *ngIf="(formSubmitted || control.dirty) && control.invalid"
+      <div
+        class="bg-danger text-white p-2 mb-2"
+        *ngIf="formSubmitted && form.invalid"
       >
-        <li *ngFor="let error of control.getValidationMessages()">
-          {{ error }}
-        </li>
-      </ul>
+        There are problems with the form
+        <ul>
+          <li *ngFor="let error of form.getFormValidationMessages()">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+      <div class="form-group" *ngFor="let control of form.productControls">
+        <label>{{ control.label }}</label>
+        <input
+          class="form-control"
+          [(ngModel)]="newProduct[control.modelProperty]"
+          name="{{ control.modelProperty }}"
+          formControlName="{{ control.modelProperty }}"
+        />
+        <ul
+          class="text-danger list-unstyled"
+          *ngIf="(formSubmitted || control.dirty) && control.invalid"
+        >
+          <li *ngFor="let error of control.getValidationMessages()">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="formSubmitted && form.invalid"
+        [class.btn-secondary]="formSubmitted && form.invalid"
+      >
+        Create
+      </button>
+    </form>
+  </div>
+  <div class="col-6">
+    <div class="form-group bg-info text-white p-2">
+      <label>Name:</label>
+      <input
+        class="bg-primary text-white"
+        [(paModel)]="newProduct.name"
+        #paModel="paModel"
+      />
+      <div class="bg-primary text-white">
+        Direction: {{ paModel.direction }}
+      </div>
     </div>
-    <button
-      class="btn btn-primary"
-      type="submit"
-      [disabled]="formSubmitted && form.invalid"
-      [class.btn-secondary]="formSubmitted && form.invalid"
-    >
-      Create
-    </button>
-  </form>
+    <table class="table table-sm table-bordered table-striped">
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+      </tr>
+      <tr
+        *ngFor="let item of getProducts(); let i = index"
+        [pa-attr]="getProducts().length < 6 ? 'bg-success' : 'bg-warning'"
+        [pa-product]="item"
+        (pa-category)="newProduct.category = $event"
+      >
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.name }}</td>
+        <td [pa-attr]="item.category == 'Soccer' ? 'bg-info' : null">
+          {{ item.category }}
+        </td>
+        <td [pa-attr]="'bg-info'">{{ item.price }}</td>
+      </tr>
+    </table>
+  </div>
 </div>
